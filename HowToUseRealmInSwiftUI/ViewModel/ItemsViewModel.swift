@@ -11,16 +11,17 @@ import Combine
 
 class ItemsViewModel: ObservableObject {
     
-    @Published var items = [Item]()
+    @Published var items = List<Item>()
     @Published var selectedGroup: Group? = nil
+    
+    var token: NotificationToken? = nil
     
     init() {
         let realm = try? Realm()
         
         if let group = realm?.objects(Group.self).first {
             self.selectedGroup = group
-            let items: List<Item> = group.items
-            self.items = Array(items)
+            self.items = group.items
         } else {
             try? realm?.write({
                 let group = Group()
@@ -30,6 +31,22 @@ class ItemsViewModel: ObservableObject {
                 group.items.append(Item())
                 group.items.append(Item())
             })
+        }
+        
+        token = selectedGroup?.observe({ [unowned self] (changes) in
+            switch changes {
+            case .error(_): break
+            case .change(_, _): self.objectWillChange.send()
+            case .deleted: self.selectedGroup = nil
+            }
+        })
+    }
+    
+    func addNewItem() {
+        if let realm = selectedGroup?.realm {
+            try? realm.write {
+                selectedGroup?.items.append(Item())
+            }
         }
     }
 }

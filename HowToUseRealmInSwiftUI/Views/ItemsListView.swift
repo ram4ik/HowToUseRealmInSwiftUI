@@ -11,16 +11,19 @@ struct ItemsListView: View {
     @StateObject var itemViewModel = ItemsViewModel()
     
     var body: some View {
-        VStack {
-            Text("Items")
-                .font(.title)
-            
+        NavigationView {
             
             List {
                 ForEach(itemViewModel.items) { item in
                     Text(item.name)
                 }
             }
+            .navigationTitle("Items")
+            .navigationBarItems(trailing: Button(action: {
+                itemViewModel.addNewItem()
+            }, label: {
+                Image(systemName: "plus")
+            }))
         }
     }
 }
