@@ -29,4 +29,14 @@ final class Item: Object, ObjectKeyIdentifiable {
         
         return randomNames.randomElement() ?? "new item"
     }
+    
+    func update(name: String) {
+        if let realm = self.realm {
+            try? realm.write({
+                self.name = name
+            })
+        } else {
+            self.name = name
+        }
+    }
 }

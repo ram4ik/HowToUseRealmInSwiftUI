@@ -16,8 +16,11 @@ class ItemsViewModel: ObservableObject {
     
     var token: NotificationToken? = nil
     
+    var realm: Realm?
+    
     init() {
         let realm = try? Realm()
+        self.realm = realm
         
         if let group = realm?.objects(Group.self).first {
             self.selectedGroup = group
@@ -33,11 +36,20 @@ class ItemsViewModel: ObservableObject {
             })
         }
         
-        token = selectedGroup?.observe({ [unowned self] (changes) in
+//        token = selectedGroup?.observe({ [unowned self] (changes) in
+//            switch changes {
+//            case .error(_): break
+//            case .change(_, _): self.objectWillChange.send()
+//            case .deleted: self.selectedGroup = nil
+//            }
+//        })
+        
+        token = selectedGroup?.items.observe({ (changes) in
             switch changes {
             case .error(_): break
-            case .change(_, _): self.objectWillChange.send()
-            case .deleted: self.selectedGroup = nil
+            case .initial(_): break
+            case .update(_, deletions: _, insertions: _, modifications: _):
+                self.objectWillChange.send()
             }
         })
     }

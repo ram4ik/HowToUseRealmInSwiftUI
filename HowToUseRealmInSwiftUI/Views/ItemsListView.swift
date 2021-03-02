@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RealmSwift
 
 struct ItemsListView: View {
     @StateObject var itemViewModel = ItemsViewModel()
@@ -15,7 +16,10 @@ struct ItemsListView: View {
             
             List {
                 ForEach(itemViewModel.items.freeze()) { item in
-                    Text(item.name)
+                    NavigationLink(destination: DetailItemView(item: itemViewModel.realm!.resolve(ThreadSafeReference(to: item))!
+                    )) {
+                        Text(item.name)
+                    }
                 }
                 .onDelete { (indexSet) in
                     itemViewModel.delete(at: indexSet)
