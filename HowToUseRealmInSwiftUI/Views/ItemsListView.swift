@@ -14,8 +14,11 @@ struct ItemsListView: View {
         NavigationView {
             
             List {
-                ForEach(itemViewModel.items) { item in
+                ForEach(itemViewModel.items.freeze()) { item in
                     Text(item.name)
+                }
+                .onDelete { (indexSet) in
+                    itemViewModel.delete(at: indexSet)
                 }
             }
             .navigationTitle("Items")

@@ -49,4 +49,12 @@ class ItemsViewModel: ObservableObject {
             }
         }
     }
+    
+    func delete(at indexSet: IndexSet) {
+        if let index = indexSet.first, let realm = items[index].realm {
+            try? realm.write {
+                realm.delete(items[index])
+            }   
+        }
+    }
 }
