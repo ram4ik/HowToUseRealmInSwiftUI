@@ -39,4 +39,14 @@ final class Item: Object, ObjectKeyIdentifiable {
             self.name = name
         }
     }
+    
+    func update(isFavorite: Bool) {
+        if let realm = self.realm {
+            try? realm.write({
+                self.isFavorite = isFavorite
+            })
+        } else {
+            self.isFavorite = isFavorite
+        }
+    }
 }

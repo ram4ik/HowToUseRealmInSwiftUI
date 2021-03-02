@@ -13,11 +13,24 @@ struct DetailItemView: View {
     @State private var name: String = ""
     @Environment(\.presentationMode) var presentation
     
+    private var isFavorite: Binding<Bool> {
+        Binding<Bool> {
+            item.isFavorite
+        } set: { value in
+            item.update(isFavorite: value)
+        }
+
+    }
+    
     var body: some View {
         VStack {
             Text("Edit item name")
             TextField("edit", text: $name)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
+            
+            Toggle(isOn: isFavorite) {
+                Text("select as favorite")
+            }
             
             Button {
                 item.update(name: name)

@@ -18,7 +18,13 @@ struct ItemsListView: View {
                 ForEach(itemViewModel.items.freeze()) { item in
                     NavigationLink(destination: DetailItemView(item: itemViewModel.realm!.resolve(ThreadSafeReference(to: item))!
                     )) {
-                        Text(item.name)
+                        HStack {
+                            Text(item.name)
+                            if item.isFavorite {
+                                Image(systemName: "heart.fill")
+                                    .foregroundColor(.pink)
+                            }
+                        }
                     }
                 }
                 .onDelete { (indexSet) in
